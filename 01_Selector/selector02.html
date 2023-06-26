@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <!-- 관계 선택자 -->
+    <div id="wrap">
+        <div id="inner_wrap">
+            <h1>제목1</h1>
+            <h2>제목2</h2>
+            <h3>제목3</h3>
+            <p>내용</p>
+            <div>
+                <h1>하위 요소1</h1>
+                <h2>하위 요소1</h2>
+            </div>
+        </div>
+    </div>
+    <script>
+        //부모 선택자 : 나를 직접적으로 감싸는 태그, 바로 위에 있는 태그
+        $('#inner_wrap').parent().css('border', '1px solid black');
+
+        //상위 요소 선택자: 나를 제외하고 위의 전부
+        //$('#inner_wrap').parents().css('border', '1px solid black');  //body부터 head까지 전부 적용됨
+
+        //하위 요소 선택자 내가 감싸고 있는 모든 태그, 공백이 들어가서 하위의 하위로 선택
+        $('#wrap h1').css('color', 'blue');
+
+        //자식 요소 선택자 : 나의 바로 밑에 있는 태그
+        //1. 선택자를 기반으로 해서 지칭하는 경우 (꺾쇠 이용 - 디폴트)  -> 나 바로 밑으로 제한
+        $('#inner_wrap > h1').text('자식 요소로 선택');
+        //2. 특정태그 밑에 존재하는 자식요소를 가져올 때 사용 (제이쿼리에서 꺾쇠대신 children이라는 메소드로 제공)
+        $('#inner_wrap').children().text('children() 함수 사용');   //#inner_wrap 밑에 있는 자식 전부에 text 넣음 -> div태그 안에 text값을 강제로 넣어서 기존 태그 h1, h2가 날아가고 내가 집어넣은 text로 대체됨
+        $('#inner_wrap > *').children().text('children() 함수 사용');  //위와 같은 의미
+        $('#inner_wrap').children('h2').text('children() 함수 사용');  //children 중 하나를 선택하려면 매개변수 넣어주면 됨
+
+        $('div > h1').css('color','yellow');  //div 안에 h1을 가진 모든 태그 - > 한사이트 내에서 비슷한 레이아웃에 동일한 기능을 가진 경우 이 방식 사용
+    </script>
+
+
+    <hr>
+    <div id="content">
+        <h1>인접 관계 선택자</h1>
+        <p>내용1</p>
+        <p class="txt">내용2</p>
+        <p>내용3</p>
+        <p>내용4</p>
+        <span>추가한 내용</span>
+    </div>
+    <script>
+        //형제 일때
+
+        //형(이전) 요소 선택자: 나의 위쪽 부분
+        $('.txt').prev().css('background', '#0ff')
+                        .css('border', '2px solid #f00');
+        $('.txt').prevAll().text('이전 요소들 전부 지칭');
+        $('.txt').prevUntil('h1').css('border', '10px solid green');   //h1태그를 만나기 전까지로 지정
+
+        //동생(이후) 요소 선택자 : 나의 아래쪽 부분
+        $('.txt').next().next().css('color', 'red');
+        $('.txt').nextAll().text('이후 요소들 전부 지칭');
+        $('.txt').nextUntil('span').css('border', '10px solid skyblue');
+
+        $('.txt + p').text('선택'); //나 바로 뒤에 존재하는 태그를 지칭 (내 뒤에 있으면서 and p태그인것) 
+        //$('.txt + span').text('선택');   //(내 뒤에 있으면서 and span태그인것)
+    </script>
+
+    <div>
+        <h5 class="title">선택자</h5>
+        <section>
+            <div>
+                <p class="txt1">내용 </p>
+            </div>
+        </section>
+        <section>
+            <div>
+                <p class="txt2">내용 </p>
+            </div>
+        </section>
+    </div>
+    <script>
+        //부모 이상의 태그를 지칭할때
+
+        //상위 요소 선택자
+        //$('.txt2').parents().css('border', '3px solid yellow');
+        $('.txt2').parents('div').css('border', '3px solid yellow');   //div를 만족하는 조상들 지칭
+
+        //가장 가까운 상위 요소 선택자 -> 위로 올라가서 특정 조건 만족하는 첫번째 값 리턴
+        $('.txt1').closest('div').css('border', '2px solid blue');
+
+        //자기를 제외한 모든 형제 요소 선택자
+        $('h5').siblings().css('background-color', 'pink');
+
+
+    </script>
+</body>
+</html>

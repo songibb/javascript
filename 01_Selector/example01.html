@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="date">
+        <div>
+            <input type="text" id="txDt" value="2023-12-25">
+        </div>
+
+        <div>
+            <p name="holiday">크리스마스 이브</p>
+            <input type="text" size="3">년
+            <input type="text" class="date" size="3">월
+            <input type="text" size="3">일
+            <button type="button">출력</button>
+        </div>
+        <div id="msg">
+            <div>
+                <label>
+                    <p class="title"></p>
+                    <input type="text">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //1) 2023-12-25 -> 2023년 12월 25일
+        let str = $('#txDt').val();
+        //console.log(str);
+        strArr = str.split('-');
+        //console.log(strArr);
+
+
+        //내가 한 것
+        // $('.date').prev().val(strArr[0]);
+        // $('.date').val(strArr[1]);
+        // $('.date').next().val(strArr[2]);
+
+        //교수님 방식
+        let dates = $('.date').parent().children('input');  //dates는 제이쿼리객체
+        for(let i=0; i < dates.length; i++){
+            dates[i].value = strArr[i];   
+            //dates 제이쿼리객체를 [i]인덱스로 하나씩 지정하는 순간 제이쿼리 포장이 깨져서 .val()이 아닌 .value라는 필드를 써야함
+        }
+
+        console.log(strArr[2]-1);
+        let year = strArr[0];
+        let month = strArr[1];
+        let day = strArr[2];
+
+        //console.log($('#msg').prev().children('p').text());
+
+
+
+        $('button').on('click', function(e){
+           // 출력 버튼을 눌렀을 때 
+           //2) 화면 상의 '크리스마스 이브' 값 -> pxormdp 'Hello, World!' 문장과 같이 출력
+
+           //내가 한 것
+           //$('.title').text($('#msg').prev().children('p').text() + ', Hello, World!');
+
+           //교수님 방식
+           let holiday = $('#date > div > p').text();
+           //let holiday = $('.date').prev().prev();
+           let msg = holiday + '//' + 'Hello, World!';
+           $('p.title').text(msg);
+
+
+
+           //3) 2023년12월25일 -> 2023-12-24
+
+           //내가 한것
+           //$('.title').next().val(year+'-'+month+'-'+(day-1)); 
+           
+           //교수님 방식
+           let newDate = `${year}/${month}/${day-1}`; 
+           $('#msg input').val(newDate);    //div 밑에 input이 있는 경우가 이것 밖에 없으므로 공백 이용해서 선택
+        })
+
+
+
+
+    </script>
+</body>
+</html>

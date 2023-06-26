@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>제목</p>
+        <input type="text" name="title" value="스토너">
+    </div>
+    <script>
+        // 객체를 생성하는 코드
+        //let pTag = jQuery();  
+
+        //제이쿼리
+        let pTag = jQuery('#app > p');   
+        console.log(pTag.text());   //제이쿼리 객체로 반환
+        //자바스크립트
+        let pTag2 = document.querySelector('#app > p');           
+        pTag2 = document.getElementById('app').querySelector('p');   //위의 방법과 같은 내용의 결과
+        console.log(pTag2.textContent);
+
+
+        //제이쿼리
+        let inputTag = $('input[name="title"]');
+        let title = inputTag.val();
+        //자바스크립트
+        let inputTag2 = document.querySelector('input[name="title"]');
+        inputTag2 = document.getElementsByName('title')[0];    //getElementById 속성을 제외하고는, 전부 값이 하나만 존재하더라도 무조건 배열로 리턴 -> 반드시 index를 넣어줘야 속성에 접근 가능
+        let title2 = inputTag2.value;
+
+
+        //생성
+        //제이쿼리
+        let hTag = $('<h3/>');
+        hTag.text(title);     //text() 매개변수 없으면 값을 반환, 매개변수 있으면 값을 넣어줌
+        //자바스크립트
+        let hTag2 = document.createElement('h3');
+        hTag2.textContent = title2;
+        
+
+        //append
+        //제이쿼리
+        $('div').append(hTag);          
+        //자바스크립트
+        document.getElementById('app').append(hTag2);
+        document.getElementsByTagName('div')[0].append(hTag2);
+
+
+
+
+        //input, select, textarea -> value 속성으로 가져오기
+    </script>
+</body>
+</html>

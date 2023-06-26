@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <!-- <script>태그 head, body 어디에서나 위치할 수 있으나 그 위치와 순서가 중요하다* -->
+    <!-- 외부 api는 head에 두기  /  dom을 제어하는 자바스크립트는 body에 두기 -> dom이 생성되어 있어야 다룰 수 있으므로 -->
+
+    <!-- 자바스크립트 호이스팅때문에 같은 html안에서는 코드상 밑에 함수를 선언하도 메모리에 올릴떄 변수와 함수를 첫줄에 올려서 아래에있는 함수를 호출 가능 -->
+    <!-- 다른 파일에 있는 걸 불러 와서 사용할때는 파일을 우선 import해야 사용가능 -->
+
+
+    <!-- java, c : 전체실행후 컴파일 -> 어느 위치에 있든 인식하고 동작 -->
+    <!-- javascript : 컴파일과 동시에 실행(인터프리터 언어) -->
+
+
+    <!-- <script>가 위에 있을 떄는 css가 먹히지 않음 -->
+    <!-- <script>
+        //제이쿼리 -> console에서 오류는 발생하지 않지만 동작은 안함
+        let h1Tag = $('#title');
+        h1Tag.css('color', 'red');
+    </script> -->     
+    <!-- <script>     
+        //자바스크립트 -> console에서 오류 발생하고 동작도 안함
+        getMessage('첫번째 script 태그');  //selector.js파일의 메소드를 가져올 수 없음 -> console에서 오류 발생
+        let jqTag = document.getElementById('title');   //title을 가져올 수 없으므로 null값을 반환 -> console에서 오류 발생
+        jqTag.style.color='blue';
+    </script> -->
+
+    <script>
+        //DOMContentLoaded: DOM을 완성 후(= HTML태그 전부 읽어들인 후 메모리에 올리는 것) 실행하겠다  -> scipt 태그가 어디에 있든 상관이 없어짐
+        document.addEventListener('DOMContentLoaded', function(e){
+            getMessage('첫번째 script 태그');  
+            let jqTag = document.getElementById('title'); 
+            jqTag.style.color='blue';
+        })
+    </script>
+
+    <div>
+        <h1 id="title">제목</h1>
+    </div>
+
+    <!-- <script>
+        let h1Tag = $('#title');
+        h1Tag.css('color', 'red');
+    </script> -->
+
+    <script>       
+        //$(document).ready(function(e){   --> ready를 아래의 방식으로 축약해서 사용할 수 있음
+        $(function(e){
+            getMessage('두번째 script 태그');  
+            let h1Tag = $('#title');
+            h1Tag.css('color', 'red');
+        })
+    </script>
+
+    <script src="selector.js"></script>
+
+    <script>
+        getMessage('마지막 script 태그');
+    </script>
+
+
+
+
+
+
+    <hr>
+    <!-- 직접 선택자 : Node가 가지고 있는 속성을 이용 -->
+    <div>
+        <h1 class="blue">제이쿼리</h1>
+        <h2 id="title">선택자</h2>
+        <h3 class="blue">직접선택자</h3>
+        <h4>그룹선택자</h4>
+    </div>
+    <script>  
+        //전체 선택자 : *
+        $('*').css('border', '1px solid blue');
+
+        //id 선택자 : #id값    //꼭 필요한 경우 합의하에 id를 지정하지, 잘 사용하지 않음  -> id로 접근하는것에 익숙해지지 말 것
+        $('#title').css('background-color', 'gray')
+                   .css('border', '2px solid black');
+
+        //class 선택자 : .class값
+        let classTag = $('.blue');
+        classTag.text('동일한 내용 적용');
+
+        for(let i=0; i<classTag.length; i++){
+            //classTag[i].text(i);   ->  오류 발생
+
+            //classTag[i].textContent = i;  //1번 방법 : 하나씩 꺼내면서 제이쿼리 포장을 깨뜨린것-> node라서 접근시 javascript로 접근해야함
+            $(classTag[i]).text(i);  //2번 방법 : 제이쿼리로 사용하려면 $() 이렇게 다시 감싸줘야 함
+        }
+
+        //태그 선택자 : 태그이름
+        $('<h3/>');  //태그 생성시 여는태그 닫는태그 모두 필요
+        $('h3').text('직접 선택자로 다시 변경');  //검색시에는 <> 필요 없음
+
+        //그룹 선택자 : , ,   -> 연관성이 없는 태그들을 묶을 수 있다
+        setTimeout(()=>$('h2#title, h4').css('color', 'green'), 1000);    //setTimeout은 위에 dom관련 이벤트 걸려있어서 넣은 것. (,)로 그룹을 넣으면 동일한 css적용 가능
+
+        //종속 선택자 : 특정 속성을 가진 태그  -> 가능하면 종속 선택자 이용해서 범위를 좁혀서 들어가는 것이 중요
+        $('h1.blue').text('종속 선택자로 선택');    //종속 선택자는 공백이 있으면 안됨
+        //$(h2 #title);   //안됨공백이 들어가면 h2태그 중에 하위요소인 #title을 선택하는 것
+    </script>
+
+</body>
+</html>

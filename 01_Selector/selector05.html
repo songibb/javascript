@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="wrap">
+        <p>내용1</p>
+        <p style="display: none;">내용2</p>
+        <p>내용3</p>
+    </div> 
+    <form action="#">
+        <p id="zone1">
+            <select name="course" id="course">
+                <option value="opt1">옵션1</option>
+                <option value="opt2" selected>옵션2</option>
+                <option value="opt3">옵션3</option>
+            </select>
+        </p>
+        <p id="zone2">
+            <input type="checkbox" name="hobby1" value="book">독서
+            <input type="checkbox" name="hobby2" value="bike" checked>자전거
+            <input type="checkbox" name="hobby3" value="hiking" checked>등산
+        </p>
+        <p id="zone3">
+            <input type="radio" name="gender" value="male">남성
+            <input type="radio" name="gender" value="female" checked>여성
+        </p>
+    </form>
+
+    <script>
+        //hidden, visible
+        $('#wrap p:hidden').css('display', 'block');    //hidden -> display:none인 상태
+        $('#wrap p:visible').css('display', 'none');    //visible -> display:none이 아닌 상태
+
+
+
+        //selected
+        //1. 선택된 option 태그
+        let selected = $('#course :selected');   //select박스 selected된 option태그가 가진 속성이나 기타 값등 모든 정보를 가져올 수 있음
+        console.log(selected);
+        //2. 선택된 value 값 가져오기
+        let selected2 = $('#course :selected').val();
+        let selected3 = $('#course').val();   //selected2와 selected3은 같은 값. -> select박스 자체를 지칭 후, val()를 하면 selected된 값을 가져올 수 있음       
+        console.log(selected2, selected3);
+
+        //자바스크립트에서 selected
+        //1. 선택된 option 태그
+        let jsSelect = document.getElementById('course');
+        let selectOpt = jsSelect.options[jsSelect.selectedIndex];    //options라는 필드 값이 하위에 가진 option들을 배열로 갖고 있음. seleted된 태그가 몇번째 인덱스인지 가져와서 접근
+        console.log(selectOpt);
+        //2. 선택된 value 값 가져오기
+        document.getElementById('course').value;
+
+
+
+        //checked  -> checkbox, radio의 선택된 input
+        //1) checkbox -> 복수 허용 (배열이라고 생각하고 반복문으로 접근)
+        let tags = $('#zone2 :checked');
+        for(let i=0; i < tags.length; i++){
+            console.log(tags[i].value);
+        }
+        //2) radio -> 하나만 적용되어있으므로 반복문 사용할 필요 없음
+        let content = $('#zone3 :checked').val();
+        console.log(content);
+
+        //자바스크립트에서 checked
+        //1) checkbox
+        //let tags2 = document.querySelectorAll('input[name^="hobby"]:checked');  //input태그를 지칭해서 checked를 가진 태그를 가져옴 -> querySelectorAll을 꼭 사용해야함 (:에 공백 없어야함)
+        let tags2 = document.querySelectorAll('#zone2 input:checked');  //위의 tags2와 같은 내용
+        for(let i=0; i < tags2.length; i++){
+            console.log(tags2[i].value);
+        }
+        //2) radio
+        content2 = document.querySelector('input[name="gender"]:checked').value;
+        console.log(content2);
+
+
+
+    </script>
+</body>
+</html>
