@@ -73,9 +73,33 @@
         //<template>태그 + clone() => 반복처럼 사용되는 특정 레이아웃을 템플릿처럼 재사용 가능하게 함  /  template태그는 dom에 등록되지 않음
         let copyObj = $('#ex03 .box1').children().clone();
         $('#ex03 .box3').append(copyObj);
-        
+
     </script>
 
+
+    <div id="ex04">
+        <section class="box1">
+            <h2>제목1</h2>
+            <div>내용1</div>
+            <div>내용2</div>
+        </section>
+        <section class="box2">
+            <h2>제목2</h2>
+            <div>내용3</div>
+            <div>내용4</div>
+        </section>
+    </div>
+    <script>
+        //기존 태그 중에서 지정한 태그를 원하는 태그로 대체
+        //삭제를 하거나 대체를 할때는 태그를 정확하게 해서 범위를 좁히는 것이 좋다
+
+        //replaceAll()
+        $('<p>Change</p>').replaceAll('#ex04 .box1 div');
+
+        //replaceWith()
+        $('#ex04 h2').replaceWith('<h3>Replace Method</h3>');
+
+    </script>
 
 </body>
 </html>

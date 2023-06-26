@@ -41,7 +41,8 @@
     <script>
         //val() : value 속성을 제어하는 메소드 -> ex) input, textarea, select : 사용자가 입력하는 태그에서 value 속성 사용
 
-        //html() : 태그의 모든 하위요소를 가져와서 문자열로 반환 -> innerHTML -> DOM이 바로 메모리에 등록되고 동작됨 -> 보안에 취약함 -> 금지된 건 아니지만 사용을 권장하지 않음 (읽어들이는 용도로만 사용할 것)
+        //html() : 태그의 모든 하위요소를 가져와서 문자열로 반환 (만약 하위 요소에 태그형태가 없다면 그 안에 text만 출력됨) -> innerHTML 
+        //-> DOM이 바로 메모리에 등록되고 동작됨 -> 보안에 취약함 -> 금지된 건 아니지만 사용을 권장하지 않음 (읽어들이는 용도로만 사용할 것)
         let html = $('#sec_1').html();
         console.log(html);
         $('#sec_1').html('<a href="#">text1</a>');  //태그가 들어오면 스스로 태그로 인식
@@ -104,7 +105,7 @@
         <a id="get_comment" href="#comments">코멘트</a>
     </div>
     <script>
-        //다른 속성을 제어하기 위한 제이쿼리 메소드
+        //위의 속성들을 제외한 다른 속성을 제어하기 위한 제이쿼리 메소드
 
         //attr() : HTML의 attribute를 조작 -> html을 로딩하는 순간 태그가 처음부터 갖고 있었던 속성값. 변하지 않음. 
         let varAttr = $('#sec01 img').attr('src');

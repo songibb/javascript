@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="ex01">
+        <h1>배열 메서드</h1>
+        <ul id="menu1">
+            <li>내용1-1</li>
+            <li>내용1-2</li>
+            <li>내용1-3</li>
+        </ul>
+        <ul id="menu2">
+            <li>내용2-1</li>
+            <li>내용2-2</li>
+            <li>내용2-3</li>
+        </ul>
+    </div>
+    <script>
+        const obj = [
+            {"area" : "서울"},
+            {"area" : "부산"},
+            {"area" : "전주"}
+        ];
+
+        //each() : 배열에 대한 순환 (자바스크립트의 forEach와 같은 역할)
+        let ulTag = $('<ul/>');
+
+         //1) 객체 생성 후 메소드 호출
+        $(obj).each(function(indedx, object){
+           let liTag = $('<li/>').text(object.area);     
+           ulTag.append(liTag);
+        });   
+        
+        $('#ex01').append(ulTag);
+
+        //2) 기존에 전역으로 있는 제이쿼리객체를 전역변수로 가져옴 
+        $.each(obj, function(){});  
+
+    </script>
+</body>
+</html>
