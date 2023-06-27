@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="list">
+        <!-- 지역:지역, 부서:부서, 이름:이름 -->
+        <!-- 근무지역 : 서울 -->
+        <ul></ul>
+        <!-- 부서 : 영업 -->
+        <ul></ul>
+        <!-- 부서 : 생산 -->
+        <ul></ul>
+    </div>
+    <script>
+        let data = [
+            {"area":"서울", "dept":"영업", "name": "무대리"},
+            {"area":"부산", "dept":"영업", "name": "홍과장"},
+            {"area":"대전", "dept":"생산", "name": "박사장"},
+            {"area":"서울", "dept":"생산", "name": "김부장"}
+        ];
+
+        //1) 근무지역 : 서울
+        let areaAry = $.map(data, function(obj, idx){
+            if(obj.area == "서울"){
+                return obj;
+            }
+        })
+
+        let ulTag = $('#list > ul:first');
+        /*
+        $(areaAry).each(function(idx, obj){
+            let liTag = $('<li/>').text(`지역:${obj['area']}, 부서:${obj['dept']}, 이름:${obj['name']}`);
+            ulTag.append(liTag);
+        });
+        */
+        appendTag(ulTag, areaAry);
+
+        //2) 부서 : 영업
+        let deptAry = $.grep(data, function(obj, idx){
+            return obj.dept == "영업" ? true : false;
+        })
+
+        ulTag = ulTag.next();
+        /*
+        $.each(deptAry, function(idx, obj){
+            let liTag = $('<li/>').text('지역:'+obj.area+', 부서:' +obj.dept+', 이름:'+obj.name);
+            ulTag.append(liTag);
+        });
+        */
+        appendTag(ulTag, deptAry);
+
+        //3) 부서 : 생산
+        deptAry = $.map(data, function(obj, idx){
+            if(obj.dept == "생산"){
+                return obj;
+            }
+        })
+
+        ulTag = ulTag.next();
+        /*
+        $(deptAry).each(function(idx, obj){
+            let liTag = $('<li/>').text(`지역:${obj['area']}, 부서:${obj['dept']}, 이름:${obj['name']}`);
+            ulTag.append(liTag);
+        })
+        */
+        appendTag(ulTag, deptAry);
+
+
+
+        //let이나 const로 선언하지않으면 전역으로 정의됨
+        function appendTag(tag, ary){
+            $(ary).each(function(idx, obj){
+            let liTag = $('<li/>').text(`지역:${obj['area']}, 부서:${obj['dept']}, 이름:${obj['name']}`);
+            tag.append(liTag);
+            });
+        }
+
+        function appendTag(a,b){
+            console.log(a,b);  //위의 함수를 덮어씀 -> 중복되는 이름을 허용함
+        }
+
+        //var(존재만 한다면 그 페이지 내에서 어디서든 사용가능 -> 중복되는 이름을 허용하게 됨) -> let, const 사용할 것
+        
+
+
+        //자바스크립트의 함수는 변수에 담을 수 있음 -> const로 선언시 선언 후에 사용 가능하게됨(그래서 주로 맨 위에서 선언) -> 중복되지 않게 하기 위해 사용
+        const appendTag = function(tag, ary){
+            $(ary).each(function(idx, obj){
+            let liTag = $('<li/>').text(`지역:${obj['area']}, 부서:${obj['dept']}, 이름:${obj['name']}`);
+            tag.append(liTag);
+            });
+        }
+        
+    </script>
+</body>
+</html>
