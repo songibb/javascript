@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        /*
+        전역메소드
+        $.ajax({
+            //접속할 주소 (통신을 일으키는 경로)
+            url : ,   
+
+            //데이터를 전송하는 방식 (method : get, post, delete, put 등)
+            type : ,   
+
+            //전송할 데이터 (클라이언트가 서버로 보내는 데이터)
+            data : ,
+
+            //전송할 데이터의 content-type (보내는 것과 상관없음) 
+            //- default : application/x-www-form-urlencoded (쿼리스트링에 대응, 데이터가 key:value 형태로 넘어왔다고 판단)
+            //- json    : application/json
+            contentType : ,
+
+            //리턴되는 데이터의 타입 (text, json, xml, html) 
+            //제이쿼리가 response객체를 파악해서 각 포맷에 맞춰서 파싱을 일으켜서 데이터를 반환
+            //원래는 데이터타입 지정해야하는데, 제이쿼리 버전이 올라가면서 지정안하면 주포맷에서는 제이쿼리가 자동으로 반응함
+            //넘어오는 데이터타입에 맞게 코드를 짠게 아니라면 굳이 지정안하는 것이 나음
+            dataType : ,
+
+            //전송에 성공했을 때
+            //응답하고 뭔가 돌려주기만한다면 success가 반응 (500 오류)
+            success : function(data){
+                console.log(data);
+            },
+
+            //전송에 실패했을 때 보여줄 에러를 정의 (404, 403 오류)
+            //하지 않으면 에러를 보여주지 않기 때문에 반드시 작성할 것
+            //fetch에서는 catch
+            error : function(reject){
+                console.log(reject);
+            },
+
+
+
+
+            //추가속성 (가능하면 안쓰길)
+
+            //비동기를 제어
+            //- default : true
+            //false -> 동기식으로 동작하나, 페이지 처리는 불가능 -> 페이지를 바꿀 수 없음 (페이지 정보가 변수에 담기는 것뿐. 데이터가 올 때까지 대기하겠다는 의미) 
+            async : 
+
+            //전송이 이루어지기 직전에 해야하는 작업을 등록하는 곳
+            //head에 값을 추가할때 사용 (ex: 외부 api랑 통신할 때, 보안때문에 토큰을 요구하는 경우가 많음. 이 토큰이 head에 들어감)
+            beforeSend : 
+        })
+        */
+    </script>
+
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>last_name</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <form>
+            <!-- 서버가 알아듣기 쉽게 name을 지정 -->
+            <h3>유저 정보</h3>
+            <label>id         : <input type="number" name="id" readonly></label><br>
+            <label>first_name : <input type="text" name="first_name"></label><br>
+            <label>last_name  : <input type="text" name="last_name"></label><br>
+            <label>email      : <input type="email" name="email"></label><br>
+            <label>avatar     : <img src="" name="avatar" alt="이미지"></label><br>
+            <button type="reset">초기화</button>
+            <button type="submit">저장</button>
+        </form>
+    </div>
+    <script>
+        //조회: get방식(조건이 있어도 get방식) / 등록: post방식 / 수정: put방식 / 삭제: delete방식
+        //단건조회는 primary key값이 같이 넘어가야함 (?가 없다면 쿼리스트링이 아니므로 url에 같이 구성될 수 있도록 하기)
+
+
+        //전체조회 : https://reqres.in/api/users?page=2 , GET방식
+        //                           -----------------uri 
+        //같은 경로도 get으로 요청하는지 post로 요청하는지에 따라 다름
+
+        $.ajax({
+            url : 'https://reqres.in/api/users?page=2',
+            type : 'get',
+            success : function(result){
+                console.log(result);
+                //데이터가 원하는 형태로 나오는지 확인
+                let data = result.data;
+                $(data).each(function(idx, obj){
+                    let trTag = $('<tr/>');
+
+                    //tr태그를 클릭했을 때 단건 조회한 정보가 input에 보이게 하기 위한 이벤트
+                    trTag.on('click', function(e){
+                        if(e.target.tagName == 'BUTTON') return;  //하위요소중 중복 되는 특정 태그에서는 동작 안하게끔(조건문에서는 currentTarget이 나 자신이므로 사용할 일이 없다.)
+
+                        let id = e.currentTarget.firstElementChild.textContent;
+                        //td이므로 value속성 안됨. textContent로 가져옴
+
+                        selectUser(id);
+                    })
+                    //이벤트가 걸려야하는 tr태그자체는 tr태그 생성하는 지점에 정보가 있으므로 이때 이벤트를 걸어도 됨
+
+                    let tdTag = $('<td/>').text(obj['id']);
+                    trTag.append(tdTag);
+
+                    tdTag = $('<td/>').text(obj['last_name']);
+                    trTag.append(tdTag);
+
+                    let btnTag = $('<button/>').text('Del');
+
+                    btnTag.on('click', function(e){
+                        e.stopPropagation(); //버튼에서 이벤트 버블링 막기
+
+                        //반복문 안에서 코드가 중복되지 않게, 선택자를 이용하는게 아니라 생성된 태그에 직접 이벤트를 걸어야함
+                        let id = e.currentTarget.parentNode.parentNode.firstElementChild.textContent;
+                        //좀더 줄이는 방법    let id = e.currentTarget.closest('tr').firstElementChild.textContent;
+
+                        deleteUser(id);
+                    })
+
+                    tdTag = $('<td/>').append(btnTag);  //td하위요소에 button생성
+                    trTag.append(tdTag);
+
+                    $('tbody').append(trTag);
+                })
+
+                $('tbody > tr > td').on('click', function(e){
+                    //alert('이벤트');
+                })
+            },
+            error : function(reject){
+                console.log(reject);
+            }
+            
+        })
+
+        //아래의 이벤트는 미리 만들어진 태그에만 동작
+        // $('tbody > tr > td').on('click', function(e){
+        //     alert('이벤트');
+        // })   
+
+        //비동기 통신 -> success와 error가 실행되는 시점이 보장되지 않음
+        //비동기통신으로 동적으로 만들어지는 태그의 경우, 아직 태그가 만들어져 있지 않아서 이벤트가 안걸림 
+        //따라서 동적으로 태그를 만드는 경우 이벤트를 새로 걸어야함
+        //그래서 이벤트는 함수로 만들어서, 이벤트를 중복된 상황에서 미리 만들어져있는 태그에도 사용하고, 동적으로 만든 태그에도 사용가능하게 해야함
+   
+
+
+        //단건조회 : https://reqres.in/api/users/ + id값 , GET방식
+        //사용자가 원할 때 호출 -> 함수
+        function selectUser(id){
+            $.ajax({
+                url : 'https://reqres.in/api/users/' + id,
+                type : 'get',
+                success : function(result){
+                    //이벤트를 걸기전에 데이터가 원하는 형태로 나오는지 확인
+                    let data = result.data;
+                    
+                    for(let field in data){
+                        let selector = 'form input[name="'+field+'"]';
+                        //console.log(selector);
+                        $(selector).val(data[field]);
+                    }
+
+                    $('form img[name="avatar"]').prop('src', data.avatar);
+                },
+                error : function(reject){
+                    console.log(reject)
+                }
+                
+            })
+        }
+
+        //submit했을 때 페이지가 새로고침 안되게 하기
+        $('form').on('submit', function(e){
+            e.preventDefault();
+            //1) form -> userInfo 가져오기
+            let userInfo = getUserInfo();
+
+            //2) 가져온 userInfo -> 서버에 update
+            //등록과 수정의 저장 버튼을 하나의 버튼으로 같이 쓰기 (id값이 있는지 없는지에 따라 구분 가능함)
+            if(userInfo.id != ''){     //input은 아무것도 입력 안해도 ''이 들어가므로
+                updateUser(userInfo);
+            } else{
+                createUser(userInfo);
+            }
+        })
+
+
+
+        //등록 : https://reqres.in/api/users/ , POST방식(값을 body에 집어넣어서 보내야 함)
+        
+        function createUser(obj){
+            $.ajax({
+                url : 'https://reqres.in/api/users/',
+                type : 'post',
+                contentType : 'application/json', 
+                data : JSON.stringify(obj),
+                success: function(data){
+                    console.log(data);
+                    if(data != null){
+                        $('form input[name="id"]').val(data.id);
+                        alert('정상적으로 등록되었습니다.');
+                    }
+                },
+                error : function(reject){
+                    console.log(reject);
+                }
+            })
+        }
+
+
+
+        //수정 : https://reqres.in/api/users/ + id값 , PUT방식(값을 body에 집어넣어서 보내야 함)
+        //수정하는 값이 객체로 넘어가줘야 함
+        //사용자가 원하는 시점에 처리
+        function updateUser(obj){
+            $.ajax({
+                url : 'https://reqres.in/api/users/' + obj.id,   //단건조회와 달리, id만이 아니라 수정하고자 하는 정보를 하나의 객체로 지녀야함
+                type : 'put',
+                contentType : 'application/json',
+                data : JSON.stringify(obj),
+                success : function(result){
+                    if(result != null){
+                        alert(`수정이 완료되었습니다. 수정시간 : ${result['updatedAt']}`);
+                    }
+                },
+                error : function(reject){
+                    console.log(reject)
+                }
+            })
+        }
+
+        //form 태그 내부의 데이터 값을 가져오는 메소드
+        //serialize()  -> 쿼리스트링(QueryString)으로 만들어줌 : ex)id=7&first_name=Kil-dong&last_name=Hong&...
+        //serializeArray()   -> 객체 배열(Object Array)  : ex) [{"name":"id", "value":"7"},
+        //                                                     {"name":"first_name", "value":"Kil-dong"}, ... ] -> input태그 하나가 객체로 만들어져서 배열로 들어감
+        function getUserInfo(){
+            let inputList = $('form').serializeArray();
+
+            let userInfo = {};
+            $.each(inputList, function(idx, obj){
+                userInfo[obj.name] = obj.value;    //ex) {"name":"id", "value":"7"} -> userInfo['id'] = '7';
+            })
+
+            return userInfo;
+        }
+
+
+
+        //삭제 :  https://reqres.in/api/users/ + id값 , DELETE방식
+        function deleteUser(id){  
+            $.ajax({
+                url : 'https://reqres.in/api/users/' + id,
+                type : 'delete',
+                success : function(data, status, xhr){    //xhr: 상세정보   
+                    if(xhr.status = 204){    //서버에서 어떻게 응답하는지에 따라
+                        alert('정상적으로 삭제되었습니다.');
+                    }
+                },
+                error : function(reject){
+                    console.log(reject);
+                }
+
+            })
+        }
+    </script>
+</body>
+</html>

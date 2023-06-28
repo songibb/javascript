@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <style>
+        table, th, td {
+            border : 1px solid black;
+        }
+    </style>
+</head>
+<body>
+                                                                                                                
+    <script>
+        //ready (원래 이벤트 걸던 것들)
+        $(function(){  
+            selectEmployees();
+
+            
+        }); 
+    </script>
+    <div>
+        <!-- 단건조회 / 등록 / 수정 / 삭제 -->
+        <form id="info">
+            <div>
+                <label for="id">사원번호</label>
+                <input type="number" id="id" name="employee_id">
+            </div>
+            <div>
+                <label for="last">성</label>
+                <input type="text" id="last" name="last_name">
+            </div>
+            <div>
+                <label for="first">이름</label>
+                <input type="text" id="first" name="first_name">
+            </div>
+            <div>
+                <label for="email">이메일</label>
+                <input type="text" id="email" name="email">
+            </div>
+            <div>
+                <label for="job">직책</label>
+                <input type="text" id="job" name="job_id">
+            </div>
+            <div>
+                <label for="hireDate">입사일</label>
+                <input type="text" id="hireDate" name="hire_date">
+            </div>
+            <button type="button" id="insertBtn">등록</button>
+            <button type="button" id="updateBtn">수정</button>
+            <button type="button" id="deleteBtn">삭제</button>
+        </form>
+
+    </div>
+    <div>
+        <!-- 전체 조회 -->
+        <button type="button" id="ckDel">선택삭제</button>
+        <table id="empList">
+        </table>
+    </div>
+    <script>
+        //<thead 원하는대로 정렬하기>
+        const header = ['employee_id','last_name','hire_date','job_id'];  //서버에서 보내오는 필드명과 배열안의 값이 같아야함
+
+        
+        //날짜를 정렬하는 Util  (input태그는 하이픈으로 인식)
+        function getDate(sec){    //서버에서 숫자로 넘어온 날짜를 다시 날짜로 바꾸기
+            let date = new Date(sec);  //매개변수값으로 숫자를 넘겨주면 날짜로 변환
+            //하이픈으로 출력되지는 않음
+            
+            let year = date.getFullYear();
+            let month = ('0' + (date.getMonth() + 1)).substr(-2);   //month 0부터 시작하기때문에 1을 더함, '0'을 앞에 붙여서 두자리로 표현
+            let day = ('0' + date.getDate()).substr(-2);    //'0'을 앞에 붙여서 두자리로 표현
+            //substr(음수) : 오른쪽 부터 잘라냄 -> 원래 두자리 숫자는 0을 제외하고 잘라와서 그대로 표현 
+
+            return year + '-' + month + '-' + day;
+        }
+
+
+
+        //DB데이터 -> table
+        function selectEmployees(){         
+            $.ajax({
+                url : 'http://192.168.0.37/myserver/empSelect',
+                type : 'get',
+                success : function(data){
+                    //create thead
+                    let theadTag = $('<thead/>');
+                    let trTag = $('<tr/>');
+
+                    //data가 배열이므로 첫번째 값을 기준으로 필드명 가져오기 (for in 사용)
+                    // for(let field in data[0]){
+                    //     let thTag = $('<th/>').text(field);
+                    //     trTag.append(thTag);
+                    // }
+
+                    //<thead 원하는대로 정렬하기> (for문 of header로 변경)
+                    for(let field of header){
+                        let thTag = $('<th/>').text(field);
+                        trTag.append(thTag);
+                    }
+
+                    theadTag.append(trTag);
+                    $('#empList').append(theadTag);
+
+
+                    //create tbody        
+                    let tbodyTag = $('<tbody/>');
+
+                    $.each(data, function(idx, obj){    //tr을 만듦
+                        let trTag = $('<tr/>');
+
+                        trTag.on('click', function(e){
+                            let id = e.currentTarget.firstElementChild.textContent;
+                            selectEmpInfo(id);
+                        })
+
+
+                        // for(let field in obj){    //td를 만듦
+                        //     let tdTag = $('<td/>').text(obj[field]);
+                        //     trTag.append(tdTag);
+                        // }
+
+                        //<thead 원하는대로 정렬하기> (for문 of header로 변경)
+                        for(let field of header){    //td를 만듦
+                            let tdTag = $('<td/>').text(obj[field]);
+                            trTag.append(tdTag);
+                        }
+
+                        tbodyTag.append(trTag);
+                    })
+                    $('#empList').append(tbodyTag);                  
+                },
+                error : function(reject){
+                    console.log(reject);
+                }
+            })
+        }
+
+        function selectEmpInfo(id){
+            $.ajax({
+                url : 'http://192.168.0.37/myserver/empFind?employee_id=' + id,
+                type : 'get',
+                success : function(result){
+                    for(let field in result){
+                        let selector = 'form input[name="'+field+'"]';
+                        $(selector).val(result[field]);
+                    }
+                },
+                error : function(reject){
+                    console.log(reject);
+                }
+            })
+        }
+    </script>
+</body>
+</html>

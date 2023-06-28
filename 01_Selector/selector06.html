@@ -70,7 +70,7 @@
         //2) 콜백함수를 이용해서 다양한 조건을 기반으로 검색 : 콜백함수는 넘겨받는 매개변수가 정해져 있음
         $('#in_2 p').filter(function(index, element){
             let idx = element.textContent.slice(6,7);
-            return idx % 3 == 0;   //return 타입 boolean -> retrurn값이 true 일때만 값을 return해줌
+            return idx % 3 == 0;   //return 타입 boolean -> return값이 true 일때만 값을 return해줌
         }).css('color', 'red');
 
     </script>
