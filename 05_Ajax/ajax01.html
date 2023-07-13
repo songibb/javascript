@@ -34,6 +34,7 @@
 
             //전송에 성공했을 때
             //응답하고 뭔가 돌려주기만한다면 success가 반응 (500 오류)
+            //fetch에서는 then
             success : function(data){
                 console.log(data);
             },
@@ -94,7 +95,7 @@
 
 
         //전체조회 : https://reqres.in/api/users?page=2 , GET방식
-        //                           -----------------uri 
+        //                           -----------------uri 부분
         //같은 경로도 get으로 요청하는지 post로 요청하는지에 따라 다름
 
         $.ajax({
